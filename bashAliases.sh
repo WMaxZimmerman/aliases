@@ -1,3 +1,4 @@
+#Bash Aliases
 alias alist="less ~/.bashrc"
 alias ls="ls -A --color"
 alias open="explorer"
@@ -18,8 +19,8 @@ alias restart="shutdown -r -t 0"
 alias lock="rundll32.exe user32.dll,LockWorkStation"
 alias clr="clear"
 
-function grp(){
-    grep -r -n -Z --color $1 .
+function grp() {
+    grep -r -n -Z --color "$1" .
 }
 
 function mcd () {
