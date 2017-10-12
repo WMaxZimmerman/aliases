@@ -5,6 +5,7 @@ alias rv="rake verify"
 alias mci="mvn clean install"
 alias tree="mvn dependency:tree > deps.txt"
 alias avro="java -jar /c/bench/tools/avro/avro-tools-1.8.2.jar"
+alias kspy="C:/bench/KinesisSpy/bin/Debug/KinesisSpy.exe &"
 
 function kmsdecrypt() {
     kmsFile="kms_encrypted_binary.tmp"

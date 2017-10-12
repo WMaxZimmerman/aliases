@@ -36,6 +36,12 @@ alias diffy="diff -y"
 #Misc Stuff
 alias subl="/c/bench/tools/cmder/vendor/Sublime3/sublime_text.exe $1 -new_console"
 alias vsc="/c/bench/tools/cmder/vendor/vsCode/Code.exe $1 -new_console"
+alias edit="$PREFERRED_EDITOR $1 -new_console"
+alias vs="'visualStudio'"
+
+function visualStudio(){
+    c:/Program\ Files\ \(x86\)/Microsoft\ Visual\ Studio\ 14.0/Common7/IDE/devenv.exe $1 &
+}
 
 git config --global alias.br branch
 git config --global alias.ci commit
