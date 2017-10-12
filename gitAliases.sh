@@ -6,8 +6,9 @@ alias gpr="git pull -r"
 alias gst="git status"
 alias gh="git log --pretty=format:'%Cgreen%h%Creset %ad | %s%Cred%d %Cblue[%an]%Creset ' --graph --date=short"
 alias changedFiles="git diff --name-only"
+alias mkbranch="'makeBranch'"
 
-function mkbranch() {
+function makeBranch() {
     git branch $1
     git checkout $1
 }

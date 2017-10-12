@@ -6,8 +6,9 @@ alias mci="mvn clean install"
 alias tree="mvn dependency:tree > deps.txt"
 alias avro="java -jar /c/bench/tools/avro/avro-tools-1.8.2.jar"
 alias kspy="C:/bench/KinesisSpy/bin/Debug/KinesisSpy.exe &"
+alias kmsdecrypt="'kmsDecryption'"
 
-function kmsdecrypt() {
+function kmsDecryption() {
     kmsFile="kms_encrypted_binary.tmp"
     winTempDir=`cygpath -d $TEMP`
     base64 --decode $1 > $TEMP/$kmsFile
