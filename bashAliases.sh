@@ -20,6 +20,7 @@ alias lock="rundll32.exe user32.dll,LockWorkStation"
 alias clr="clear"
 alias grp="'customGrep'"
 alias mcd="'mkdirAndCd'"
+alias chrome="/c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe"
 
 #Emacs Aliases
 alias enw="emacs -q -nw -Q"

@@ -7,6 +7,7 @@ alias tree="mvn dependency:tree > deps.txt"
 alias avro="java -jar /c/bench/tools/avro/avro-tools-1.8.2.jar"
 alias kspy="C:/bench/KinesisSpy/bin/Debug/KinesisSpy.exe &"
 alias kmsdecrypt="'kmsDecryption'"
+alias jq="c:/bench/tools/jq/jq.exe"
 
 function kmsDecryption() {
     kmsFile="kms_encrypted_binary.tmp"
