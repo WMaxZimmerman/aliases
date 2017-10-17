@@ -9,6 +9,7 @@ alias changedFiles="git diff --name-only"
 alias mkbranch="'makeBranch'"
 alias gopen="'openInGitHub'"
 alias gcb="git branch | grep '*'"
+alias gitgone='deleteRepoAndReclone'
 
 function makeBranch() {
     git branch $1
@@ -40,4 +41,22 @@ function openInGitHub() {
     url="$url/tree/$branch"
     #echo "url = $url"
     chrome $url
+}
+
+function deleteRepoAndReclone() {
+    url=$(getRepoURL)
+    echo $url
+    dir=$PWD
+    echo $dir
+    cd ..
+    echo $PWD
+    rm -rf $dir
+    git clone $url
+    cd $dir
+}
+
+function getRepoURL() {
+    #echo "branch = $branch"
+    startingUrl=$(grep "url =" .git/config)
+    $(trimString \"$startingUrl\" 7 0)
 }
