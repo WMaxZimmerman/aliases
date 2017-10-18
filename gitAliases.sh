@@ -10,6 +10,7 @@ alias mkbranch="'makeBranch'"
 alias gopen="'openInGitHub'"
 alias gcb="git branch | grep '*'"
 alias gitgone='deleteRepoAndReclone'
+alias gitUrl="'getRepoURL'"
 
 function makeBranch() {
     git branch $1
@@ -49,11 +50,11 @@ function openInGitHub() {
 
 function deleteRepoAndReclone() {
     url=$(getRepoURL)
-    echo $url
+    #echo $url
     dir=$PWD
-    echo $dir
+    #echo $dir
     cd ..
-    echo $PWD
+    #echo $PWD
     rm -rf $dir
     git clone $url
     cd $dir
@@ -62,5 +63,6 @@ function deleteRepoAndReclone() {
 function getRepoURL() {
     #echo "branch = $branch"
     startingUrl=$(grep "url =" .git/config)
-    $(trimString \"$startingUrl\" 7 0)
+    url=$(trimString "$startingUrl" 7 0)
+    echo $url
 }

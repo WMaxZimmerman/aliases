@@ -21,6 +21,7 @@ alias clr="clear"
 alias grp="'customGrep'"
 alias mcd="'mkdirAndCd'"
 alias chrome="/c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe"
+alias trimString="'trimString'"
 
 #Emacs Aliases
 alias enw="emacs -q -nw -Q"
