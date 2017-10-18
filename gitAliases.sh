@@ -32,12 +32,16 @@ function openInGitHub() {
     done
 
     #echo "branch = $branch"
-    startingUrl=$(grep "url =" .git/config)
-    nString=${startingUrl/":"/"/"}
-    #echo "nString = $nString"
-    oLength=${#nString}
-    nLength=$[oLength-14]
-    url=${nString:10:nLength}
+    url=$(grep "url =" .git/config)
+
+    if [[ $url == *"https"* ]];
+    then
+        url=$(trimString "$url" 7 4)
+    else
+        url=${url/":"/"/"}
+        url=$(trimString "$url" 10 4)
+    fi
+
     url="$url/tree/$branch"
     #echo "url = $url"
     chrome $url

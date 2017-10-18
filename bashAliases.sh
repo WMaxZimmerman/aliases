@@ -54,13 +54,15 @@ function mkdirAndCd() {
     cd $1
 }
 
-function trimString() {
-    startingString=$1
+function trimString(){
+    string=$1
     headTrim=$2
     tailTrim=$3
-    tailTrim=$[tailTrim+headTrim]
-    oLength=${#startingString}
-    tailTrim=$[oLength-tailTrim]
-    endString=${startingString:headTrim:tailTrim}
-    echo $endString
-}
+
+    oLength=${#string}
+    cLength=$[headTrim+tailTrim]
+    nLength=$[oLength-cLength]
+    string=${string:headTrim:nLength}
+
+    echo $string
+}    
