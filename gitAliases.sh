@@ -57,3 +57,38 @@ function deleteRepoAndReclone() {
     git clone $url
     cd $dir
 }
+
+function performActionOnEachRepo() {
+    dir=$PWD
+    for d in */ ; do
+	repoDir="$dir/$d"
+	if [ -d "$repoDir/.git" ]; then
+	    cd $repoDir
+	    eval $1
+	fi
+    done
+    cd $dir
+}
+
+function commitChangesInEachRepo() {
+    fileCount=$(changedFiles | wc -l)
+    #echo $fileCount
+    if (( $fileCount > 0)); then
+	echo $PWD
+	#echo $repoDir
+	echo $fileCount
+	changedFiles
+	echo ""
+    fi    
+}
+
+function deleteRepoIfExternal() {
+    tempDir=$PWD
+    tempUrl=$(gitUrl)
+    if [[ $tempUrl == *"githubext"* ]];
+    then
+	echo $tempDir
+	cd ..
+	rm -rf $tempDir
+    fi
+}
