@@ -10,7 +10,7 @@ alias mkbranch="'makeBranch'"
 alias gopen="'openInGitHub'"
 alias gcb="git branch | grep '*'"
 alias gitgone='deleteRepoAndReclone'
-alias gitUrl="'getRepoURL'"
+alias gitUrl="git config --get remote.origin.url"
 
 function makeBranch() {
     git branch $1
@@ -33,14 +33,12 @@ function openInGitHub() {
     done
 
     #echo "branch = $branch"
-    url=$(grep "url =" .git/config)
+    url=$(gitUrl)
 
-    if [[ $url == *"https"* ]];
+    if [[ $url != *"https"* ]];
     then
-        url=$(trimString "$url" 7 4)
-    else
         url=${url/":"/"/"}
-        url=$(trimString "$url" 10 4)
+        url=$(trimString "$url" 4 4)
     fi
 
     url="$url/tree/$branch"
@@ -58,11 +56,4 @@ function deleteRepoAndReclone() {
     rm -rf $dir
     git clone $url
     cd $dir
-}
-
-function getRepoURL() {
-    #echo "branch = $branch"
-    startingUrl=$(grep "url =" .git/config)
-    url=$(trimString "$startingUrl" 7 0)
-    echo $url
 }
