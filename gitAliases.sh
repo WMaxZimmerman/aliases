@@ -11,6 +11,9 @@ alias gopen="'openInGitHub'"
 alias gcb="git branch | grep '*'"
 alias gitgone='deleteRepoAndReclone'
 alias gitUrl="git config --get remote.origin.url"
+alias gitClean="cleanWorkspace"
+alias gitChanges="commitChangesInEachRepo"
+alias gitEach="performActionOnEachRepo"
 
 function makeBranch() {
     git branch $1
@@ -39,6 +42,8 @@ function openInGitHub() {
     then
         url=${url/":"/"/"}
         url=$(trimString "$url" 4 4)
+    else
+        url=$(trimString "$url" 0 4)
     fi
 
     url="$url/tree/$branch"
@@ -61,11 +66,11 @@ function deleteRepoAndReclone() {
 function performActionOnEachRepo() {
     dir=$PWD
     for d in */ ; do
-	repoDir="$dir/$d"
-	if [ -d "$repoDir/.git" ]; then
-	    cd $repoDir
-	    eval $1
-	fi
+        repoDir="$dir/$d"
+        if [ -d "$repoDir/.git" ]; then
+            cd $repoDir
+            eval $1
+        fi
     done
     cd $dir
 }
@@ -74,12 +79,19 @@ function commitChangesInEachRepo() {
     fileCount=$(changedFiles | wc -l)
     #echo $fileCount
     if (( $fileCount > 0)); then
-	echo $PWD
-	#echo $repoDir
-	echo $fileCount
-	changedFiles
-	echo ""
-    fi    
+        echo $PWD
+        #echo $repoDir
+        echo $fileCount
+        changedFiles
+        echo ""
+    fi
+}
+
+function cleanWorkspace() {
+    echo $PWD
+    git reset --hard
+    git pull -r
+    echo ""
 }
 
 function deleteRepoIfExternal() {
@@ -87,8 +99,8 @@ function deleteRepoIfExternal() {
     tempUrl=$(gitUrl)
     if [[ $tempUrl == *"githubext"* ]];
     then
-	echo $tempDir
-	cd ..
-	rm -rf $tempDir
+        echo $tempDir
+        cd ..
+        rm -rf $tempDir
     fi
 }
