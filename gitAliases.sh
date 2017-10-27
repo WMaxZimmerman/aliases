@@ -18,6 +18,7 @@ alias gitEach="performActionOnEachRepo"
 function makeBranch() {
     git branch $1
     git checkout $1
+    git branch --set-upstream-to=origin/master $1
 }
 
 function openInGitHub() {
@@ -52,7 +53,7 @@ function openInGitHub() {
 }
 
 function deleteRepoAndReclone() {
-    url=$(getRepoURL)
+    url=$(gitUrl)
     #echo $url
     dir=$PWD
     #echo $dir
