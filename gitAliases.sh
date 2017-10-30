@@ -14,6 +14,7 @@ alias gitUrl="git config --get remote.origin.url"
 alias gitClean="cleanWorkspace"
 alias gitChanges="commitChangesInEachRepo"
 alias gitEach="performActionOnEachRepo"
+alias yolo="'commitAllChangesAndPushToMaster'"
 
 function makeBranch() {
     git branch $1
@@ -74,6 +75,12 @@ function performActionOnEachRepo() {
         fi
     done
     cd $dir
+}
+
+function commitAllChangesAndPushToMaster(){
+    git add -A
+    git commit -am "YOLO"
+    git push origin master --force
 }
 
 function commitChangesInEachRepo() {
