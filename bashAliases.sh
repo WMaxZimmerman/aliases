@@ -66,4 +66,10 @@ function trimString(){
     string=${string:headTrim:nLength}
 
     echo $string
-}    
+}
+
+function imoutat(){
+    hour=$(date %H)
+    minute=$(date %M)
+
+}
