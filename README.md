@@ -4,7 +4,7 @@ A repo to hold aliases for command line
 To correctly set up you will need to clone or copy this repo to your home folder.
 You will then need to add
 ". ~/aliases/init.sh"
-to you .bashrc or .bashprofile file (which ever is ran with your setup for cmder).
+to your .bashrc or .bashprofile file (which ever is ran with your setup for cmder/bash).
 
 After doing those steps you will be able to use the aliases on any bash terminal you open.
 
