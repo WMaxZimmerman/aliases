@@ -15,6 +15,7 @@ alias ll="ls -la"
 alias e="explorer"
 alias reload="source ~/.bashrc"
 alias imout="shutdown -s -t 0"
+alias imoutat="'imoutat'"
 alias restart="shutdown -r -t 0"
 alias lock="rundll32.exe user32.dll,LockWorkStation"
 alias clr="clear"
@@ -69,7 +70,23 @@ function trimString(){
 }
 
 function imoutat(){
-    hour=$(date %H)
-    minute=$(date %M)
+    cHour=$(date +%H)
+    cMinute=$(date +%M)
+    cSecond=$(date +%S)
+    iHour=$1
+    iMinute=$2
 
+    if [ $iHour -lt 7 ]
+    then
+        iHour=$((iHour+12))
+    fi
+
+    dMinute=$((iMinute-cMinute))
+    dHour=$((iHour-cHour))
+    dHour=$((dHour*60))
+    dMinute=$((dMinute+dHour))
+    dSecond=$((dMinute*60))
+    dSecond=$((dSecond-cSecond))
+
+    shutdown -s -f -t $dSecond
 }
