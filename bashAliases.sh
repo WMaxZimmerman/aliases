@@ -14,15 +14,18 @@ alias ll="ls -la"
 #System Aliases
 alias e="explorer"
 alias reload="source ~/.bashrc"
-alias imout="shutdown -s -t 0"
+alias imout="shutdown -s -f -t 0"
 alias imoutat="'imoutat'"
-alias restart="shutdown -r -t 0"
+alias imin="shutdown -a"
+alias restart="shutdown -r -f -t 0"
 alias lock="rundll32.exe user32.dll,LockWorkStation"
 alias clr="clear"
 alias grp="'customGrep'"
 alias mcd="'mkdirAndCd'"
 alias chrome="/c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe"
 alias trimString="'trimString'"
+alias zip="'zipFolder'"
+alias unzip="'unzipFolder'"
 
 #Emacs Aliases
 alias enw="emacs -q -nw -Q"
@@ -89,4 +92,14 @@ function imoutat(){
     dSecond=$((dSecond-cSecond))
 
     shutdown -s -f -t $dSecond
+}
+
+function zipFolder(){
+    fileName=$1
+    7z a "$1.zip" "$1"
+}
+
+function unzipFolder(){
+    fileName=$1
+    7z e $fileName
 }

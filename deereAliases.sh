@@ -8,6 +8,7 @@ alias avro="java -jar /c/bench/tools/avro/avro-tools-1.8.2.jar"
 alias kspy="C:/bench/KinesisSpy/bin/Debug/KinesisSpy.exe &"
 alias kmsdecrypt="'kmsDecryption'"
 alias jq="c:/bench/tools/jq/jq.exe"
+alias qretry="'moveErrorQueuesBackToMain'"
 
 function kmsDecryption() {
     kmsFile="kms_encrypted_binary.tmp"
@@ -15,4 +16,14 @@ function kmsDecryption() {
     base64 --decode $1 > $TEMP/$kmsFile
     aws kms decrypt --region us-east-1 --ciphertext-blob fileb://$winTempDir/$kmsFile --output text --query Plaintext | base64 --decode --ignore-garbage
     rm $TEMP/$kmsFile
+}
+
+function moveErrorQueuesBackToMain(){
+    curDir=$PWD
+    cd /c/bench
+    env=$1
+    queueName=$2
+    ./queue-utility/moveq.bat $env primary primary "$queueName.ERROR" $queueName
+    ./queue-utility/moveq.bat $env backup primary "$queueName.ERROR" $queueName
+    cd $curDir
 }
