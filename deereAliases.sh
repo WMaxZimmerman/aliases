@@ -46,8 +46,6 @@ function prettyPrintQueue(){
         then
             echo ""
             echo $p
-        else
-            echo ""
         fi
     done < $tempFile
 
