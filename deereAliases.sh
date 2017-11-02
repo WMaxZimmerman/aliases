@@ -9,6 +9,8 @@ alias kspy="C:/bench/KinesisSpy/bin/Debug/KinesisSpy.exe &"
 alias kmsdecrypt="'kmsDecryption'"
 alias jq="c:/bench/tools/jq/jq.exe"
 alias qretry="'moveErrorQueuesBackToMain'"
+alias qclear="'clearOutErrorQueues'"
+alias qprint="'printOutErrorQueues'"
 
 function kmsDecryption() {
     kmsFile="kms_encrypted_binary.tmp"
@@ -16,6 +18,49 @@ function kmsDecryption() {
     base64 --decode $1 > $TEMP/$kmsFile
     aws kms decrypt --region us-east-1 --ciphertext-blob fileb://$winTempDir/$kmsFile --output text --query Plaintext | base64 --decode --ignore-garbage
     rm $TEMP/$kmsFile
+}
+
+function printOutErrorQueues(){
+    curDir=$PWD
+    cd /c/bench
+    env=$2
+    queueName=$(getHdpStreamName $3 $1)
+    echo "$queueName.ERROR:"
+    prettyPrintQueue "Primary" $env $queueName
+    prettyPrintQueue "Backup" $env $queueName
+
+    cd $curDir
+}
+
+function prettyPrintQueue(){
+    tempFile="$tmp/qprettytempfile.txt"
+    echo "$1"
+    ./queue-utility/printq.bat $2 $1 "$3.ERROR" > $tempFile
+    sed -i -e 's/></>\n</g' $tempFile
+
+    while read p; do
+        if [[ $p == "<"* ]];
+        then
+            echo $p
+        elif [[ $p != "P"* ]] && [[ $p != "\n"* ]];
+        then
+            echo ""
+            echo $p
+        else
+            echo ""
+        fi
+    done < $tempFile
+
+    rm -rf $tempFile
+}
+
+function clearOutErrorQueues(){
+    curDir=$PWD
+    cd /c/bench
+    env=$2
+    queueName=$(getHdpStreamName $3 $1)
+    ./queue-utility/clearq.bat $env "$queueName.ERROR"
+    cd $curDir
 }
 
 function moveErrorQueuesBackToMain(){
