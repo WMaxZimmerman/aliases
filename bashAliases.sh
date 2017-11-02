@@ -73,9 +73,9 @@ function trimString(){
 }
 
 function imoutat(){
-    cHour=$(date +%H)
-    cMinute=$(date +%M)
-    cSecond=$(date +%S)
+    cHour=$(date +%-H)
+    cMinute=$(date +%-M)
+    cSecond=$(date +%-S)
     iHour=$1
     iMinute=$2
 
