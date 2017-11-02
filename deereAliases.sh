@@ -22,8 +22,48 @@ function moveErrorQueuesBackToMain(){
     curDir=$PWD
     cd /c/bench
     env=$1
-    queueName=$2
+    queueName=$(getHdpStreamName $2 $3)
     ./queue-utility/moveq.bat $env primary primary "$queueName.ERROR" $queueName
     ./queue-utility/moveq.bat $env backup primary "$queueName.ERROR" $queueName
     cd $curDir
+}
+
+function getHdpStreamName(){
+    region=${2,,}
+    queueName=${1,,}
+    actualName=""
+    streamRegion=""
+
+    if [ $region == "eu" ]
+    then
+        streamRegion=".R2"
+    fi
+
+    case "$queueName" in
+        "fileprocess")
+            actualName="ISG.AXIOM$streamRegion.HDPCOMM.PROCESSFILE.REQUEST"
+            ;;
+        "logoperationupdate")
+            actualName="ISG.AXIOM$streamRegion.HDPCOMM.LOGOPERATION.REQUEST"
+            ;;
+        "groupprocessing")
+            actualName="ISG.HDP$streamRegion.GROUPING.REQUEST"
+            ;;
+        "aggregation")
+            actualName="ISG.HDP$streamRegion.AGGREGATION.REQUEST"
+            ;;
+        "mapgenerator")
+            actualName="ISG.HDP$streamRegion.GENERATEMAPS.REQUEST"
+            ;;
+        "polygongenerator")
+            actualName="ISG.HDP$streamRegion.GENERATEPOLYGONS.REQUEST"
+            ;;
+        "apexmigrator")
+            actualName="ISG.AXIOM$streamRegion.HDPCOMM.PROCESSBACKUP.REQUEST"
+            ;;
+        *)
+            ;;
+    esac
+
+    echo $actualName
 }
