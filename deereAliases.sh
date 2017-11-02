@@ -34,12 +34,26 @@ function printOutErrorQueues(){
 
 function prettyPrintQueue(){
     tempFile="$tmp/qprettytempfile.txt"
+    searchString="><"
+    replaceString=">\n<"
     echo "$1"
     ./queue-utility/printq.bat $2 $1 "$3.ERROR" > $tempFile
-    sed -i -e 's/></>\n</g' $tempFile
+    sed -i -e "s/$searchString/$replaceString/g" $tempFile
+    searchString="<\/"
+    replaceString=""
+    sed -i "s/$searchString.*$/$replaceString/g" $tempFile
+    searchString="<?"
+    replaceString=""
+    sed -i "s/$searchString.*$/$replaceString/g" $tempFile
+    searchString="<"
+    replaceString="__"
+    sed -i -e "s/$searchString/$replaceString/g" $tempFile
+    searchString=">"
+    replaceString=": "
+    sed -i -e "s/$searchString/$replaceString/g" $tempFile
 
     while read p; do
-        if [[ $p == "<"* ]];
+        if [[ $p == "_"* ]];
         then
             echo $p
         elif [[ $p != "P"* ]] && [[ $p != "\n"* ]];
