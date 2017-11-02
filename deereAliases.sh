@@ -21,8 +21,8 @@ function kmsDecryption() {
 function moveErrorQueuesBackToMain(){
     curDir=$PWD
     cd /c/bench
-    env=$1
-    queueName=$(getHdpStreamName $2 $3)
+    env=$2
+    queueName=$(getHdpStreamName $3 $1)
     ./queue-utility/moveq.bat $env primary primary "$queueName.ERROR" $queueName
     ./queue-utility/moveq.bat $env backup primary "$queueName.ERROR" $queueName
     cd $curDir
