@@ -8,7 +8,7 @@ alias avro="java -jar /c/bench/tools/avro/avro-tools-1.8.2.jar"
 alias kspy="C:/bench/KinesisSpy/bin/Debug/KinesisSpy.exe &"
 alias kmsdecrypt="'kmsDecryption'"
 alias jq="c:/bench/tools/jq/jq.exe"
-alias qretry="'moveErrorQueuesBackToMain'"
+alias qretry="'moveManyErrorQueuesBackToMain'"
 alias qclear="'clearOutErrorQueues'"
 alias qprint="'printOutErrorQueues'"
 
@@ -26,18 +26,24 @@ function printOutErrorQueues(){
     env=$2
     queueName=$(getHdpStreamName $3 $1)
     echo "$queueName.ERROR:"
-    prettyPrintQueue "Primary" $env $queueName
-    prettyPrintQueue "Backup" $env $queueName
+
+    primaryQ="./queue-utility/printq.bat $env primary $queueName.ERROR"
+    prettyPrintQueue "Primary" $env $queueName "$primaryQ"
+
+    backupQ="./queue-utility/printq.bat $env backup $queueName.ERROR"
+    prettyPrintQueue "Backup" $env $queueName "$backupQ"
 
     cd $curDir
 }
 
 function prettyPrintQueue(){
     tempFile="$tmp/qprettytempfile.txt"
+
+    echo "$1"
+    eval "$4 > $tempFile"
+
     searchString="><"
     replaceString=">\n<"
-    echo "$1"
-    ./queue-utility/printq.bat $2 $1 "$3.ERROR" > $tempFile
     sed -i -e "s/$searchString/$replaceString/g" $tempFile
     searchString="<\/"
     replaceString=""
@@ -56,7 +62,7 @@ function prettyPrintQueue(){
         if [[ $p == "_"* ]];
         then
             echo $p
-        elif [[ $p != "P"* ]] && [[ $p != "\n"* ]];
+        elif [[ $p != "P"* ]] && [[ $p != "" ]];
         then
             echo ""
             echo $p
@@ -75,13 +81,68 @@ function clearOutErrorQueues(){
     cd $curDir
 }
 
+function moveManyErrorQueuesBackToMain(){
+    iRegion=$1
+    iEnv=$2
+    iQueue=$3
+
+    if [ $iRegion != "all" ]
+    then
+        if [ $iEnv != "all" ]
+        then
+            if [ $iQueue != "all" ]
+            then
+                moveErrorQueuesBackToMain $iRegion $iEnv $iQueue
+            else
+                loopQueueAndRetryErrors $iRegion $iEnv
+            fi
+        else
+            loopEnvAndRetryErrors $iRegion
+        fi
+    else
+        loopRegionAndRetryErrors
+    fi
+}
+
+function loopQueueAndRetryErrors(){
+    declare -a queueList=("FileProcess" "LogOperationUpdate" "GroupProcessing" "Aggregation" "MapGenerator" "PolygonGenerator" "ApexMigrator")
+
+    for q in "${queueList[@]}"
+    do
+        moveErrorQueuesBackToMain $1 $2 $q
+    done
+}
+
+function loopEnvAndRetryErrors(){
+    declare -a envList=("prod" "cert" "qual" "devl")
+
+    for e in "${envList[@]}"
+    do
+        loopQueueAndRetryErrors $1 $e
+    done
+}
+
+function loopRegionAndRetryErrors(){
+    declare -a regionList=("us" "eu")
+
+    for r in "${regionList[@]}"
+    do
+        loopEnvAndRetryErrors $r
+    done
+}
+
 function moveErrorQueuesBackToMain(){
     curDir=$PWD
     cd /c/bench
     env=$2
     queueName=$(getHdpStreamName $3 $1)
-    ./queue-utility/moveq.bat $env primary primary "$queueName.ERROR" $queueName
-    ./queue-utility/moveq.bat $env backup primary "$queueName.ERROR" $queueName
+
+    primaryQ="./queue-utility/moveq.bat $env primary primary $queueName.ERROR $queueName"
+    prettyPrintQueue "Primary" $env $queueName "$primaryQ"
+
+    backupQ="./queue-utility/moveq.bat $env backup primary $queueName.ERROR $queueName"
+    prettyPrintQueue "Primary" $env $queueName "$backupQ"
+
     cd $curDir
 }
 
