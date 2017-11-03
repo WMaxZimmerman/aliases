@@ -36,6 +36,30 @@ function printOutErrorQueues(){
     cd $curDir
 }
 
+function clearOutErrorQueues(){
+    curDir=$PWD
+    cd /c/bench
+    env=$2
+    queueName=$(getHdpStreamName $3 $1)
+    ./queue-utility/clearq.bat $env "$queueName.ERROR"
+    cd $curDir
+}
+
+function moveErrorQueuesBackToMain(){
+    curDir=$PWD
+    cd /c/bench
+    env=$2
+    queueName=$(getHdpStreamName $3 $1)
+
+    primaryQ="./queue-utility/moveq.bat $env primary primary $queueName.ERROR $queueName"
+    prettyPrintQueue "Primary" $env $queueName "$primaryQ"
+
+    backupQ="./queue-utility/moveq.bat $env backup primary $queueName.ERROR $queueName"
+    prettyPrintQueue "Primary" $env $queueName "$backupQ"
+
+    cd $curDir
+}
+
 function prettyPrintQueue(){
     tempFile="$tmp/qprettytempfile.txt"
 
@@ -70,15 +94,6 @@ function prettyPrintQueue(){
     done < $tempFile
 
     rm -rf $tempFile
-}
-
-function clearOutErrorQueues(){
-    curDir=$PWD
-    cd /c/bench
-    env=$2
-    queueName=$(getHdpStreamName $3 $1)
-    ./queue-utility/clearq.bat $env "$queueName.ERROR"
-    cd $curDir
 }
 
 function moveManyErrorQueuesBackToMain(){
@@ -129,21 +144,6 @@ function loopRegionAndRetryErrors(){
     do
         loopEnvAndRetryErrors $r
     done
-}
-
-function moveErrorQueuesBackToMain(){
-    curDir=$PWD
-    cd /c/bench
-    env=$2
-    queueName=$(getHdpStreamName $3 $1)
-
-    primaryQ="./queue-utility/moveq.bat $env primary primary $queueName.ERROR $queueName"
-    prettyPrintQueue "Primary" $env $queueName "$primaryQ"
-
-    backupQ="./queue-utility/moveq.bat $env backup primary $queueName.ERROR $queueName"
-    prettyPrintQueue "Primary" $env $queueName "$backupQ"
-
-    cd $curDir
 }
 
 function getHdpStreamName(){
