@@ -22,7 +22,7 @@ alias lock="rundll32.exe user32.dll,LockWorkStation"
 alias clr="clear"
 alias grp="'customGrep'"
 alias mcd="'mkdirAndCd'"
-alias chrome="/c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe"
+alias chrome="'web'"
 alias trimString="'trimString'"
 alias zip="'zipFolder'"
 alias unzip="'unzipFolder'"
@@ -102,4 +102,8 @@ function zipFolder(){
 function unzipFolder(){
     fileName=$1
     7z e $fileName
+}
+
+function web(){
+    /c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe $1 &
 }
