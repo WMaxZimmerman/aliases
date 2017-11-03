@@ -103,8 +103,10 @@ function moveManyErrorQueuesBackToMain(){
 
     if [ $iRegion != "all" ]
     then
+        echo "iRegion:"
         if [ $iEnv != "all" ]
         then
+            echo "$iEnv:"
             if [ $iQueue != "all" ]
             then
                 moveErrorQueuesBackToMain $iRegion $iEnv $iQueue
@@ -133,6 +135,7 @@ function loopEnvAndRetryErrors(){
 
     for e in "${envList[@]}"
     do
+        echo "$e:"
         loopQueueAndRetryErrors $1 $e
     done
 }
@@ -142,6 +145,7 @@ function loopRegionAndRetryErrors(){
 
     for r in "${regionList[@]}"
     do
+        echo "$r:"
         loopEnvAndRetryErrors $r
     done
 }
