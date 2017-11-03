@@ -63,7 +63,7 @@ function moveErrorQueuesBackToMain(){
 function prettyPrintQueue(){
     tempFile="$tmp/qprettytempfile.txt"
 
-    echo "$1"
+    echo "$1:"
     eval "$4 > $tempFile"
 
     searchString="><"
@@ -82,16 +82,22 @@ function prettyPrintQueue(){
     replaceString=": "
     sed -i -e "s/$searchString/$replaceString/g" $tempFile
 
+    count=0
     while read p; do
         if [[ $p == "_"* ]];
         then
             echo $p
         elif [[ $p != "P"* ]] && [[ $p != "" ]];
         then
-            echo ""
+            if [[ $count -gt 0 ]]
+            then
+                echo ""
+            fi
             echo $p
         fi
+        let count++
     done < $tempFile
+    echo ""
 
     rm -rf $tempFile
 }
