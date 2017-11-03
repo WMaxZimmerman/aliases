@@ -10,7 +10,7 @@ alias kmsdecrypt="'kmsDecryption'"
 alias jq="c:/bench/tools/jq/jq.exe"
 alias qretry="'moveManyErrorQueuesBackToMain'"
 alias qclear="'clearOutErrorQueues'"
-alias qprint="'printOutErrorQueues'"
+alias qprint="'printManyErrorQueuesBackToMain'"
 
 function kmsDecryption() {
     kmsFile="kms_encrypted_binary.tmp"
@@ -62,7 +62,7 @@ function moveErrorQueuesBackToMain(){
 
 function prettyPrintQueue(){
     tempFile="$tmp/qprettytempfile.txt"
-
+    indent="__"
     echo "$1:"
     eval "$4 > $tempFile"
 
@@ -76,30 +76,99 @@ function prettyPrintQueue(){
     replaceString=""
     sed -i "s/$searchString.*$/$replaceString/g" $tempFile
     searchString="<"
-    replaceString="__"
+    replaceString="$indent"
     sed -i -e "s/$searchString/$replaceString/g" $tempFile
     searchString=">"
     replaceString=": "
     sed -i -e "s/$searchString/$replaceString/g" $tempFile
 
     count=0
+    indentMultiplier=0
     while read p; do
-        if [[ $p == "_"* ]];
+        if [[ $p == "$indent"* ]];
         then
+            if [[ $indentMultiplier -gt 0 ]];
+            then
+                eval "printf $indent%.0s {1..$indentMultiplier}"
+            fi
+
             echo $p
+
+            if [[ $p == *":" ]];
+            then
+                let indentMultiplier=indentMultiplier+1
+            fi
         elif [[ $p != "P"* ]] && [[ $p != "" ]];
         then
             if [[ $count -gt 0 ]]
             then
+                let indentMultiplier=0
                 echo ""
             fi
             echo $p
+        elif [[ $p == "" ]];
+        then
+            let indentMultiplier=indentMultiplier-1
         fi
         let count++
     done < $tempFile
     echo ""
 
     rm -rf $tempFile
+}
+
+function printManyErrorQueuesBackToMain(){
+    iRegion=$1
+    iEnv=$2
+    iQueue=$3
+
+    if [ $iRegion != "all" ]
+    then
+        echo "$iRegion:"
+        if [ $iEnv != "all" ]
+        then
+            echo "$iEnv:"
+            if [ $iQueue != "all" ]
+            then
+                printOutErrorQueues $iRegion $iEnv $iQueue
+            else
+                loopQueueAndPrintErrors $iRegion $iEnv
+            fi
+        else
+            loopEnvAndPrintErrors $iRegion
+        fi
+    else
+        loopRegionAndPrintErrors
+    fi
+}
+
+function loopQueueAndPrintErrors(){
+    declare -a queueList=("FileProcess" "LogOperationUpdate" "GroupProcessing" "Aggregation" "MapGenerator" "PolygonGenerator" "ApexMigrator")
+
+    for q in "${queueList[@]}"
+    do
+        printOutErrorQueues $1 $2 $q
+    done
+}
+
+function loopEnvAndPrintErrors(){
+    declare -a envList=("prod" "cert" "qual" "devl")
+
+    for e in "${envList[@]}"
+    do
+        echo "$e:"
+        loopQueueAndPrintErrors $1 $e
+    done
+}
+
+function loopRegionAndPrintErrors(){
+    declare -a regionList=("us" "eu")
+
+    for r in "${regionList[@]}"
+    do
+        echo "$r:"
+        loopEnvAndPrintErrors $r
+    done
 }
 
 function moveManyErrorQueuesBackToMain(){
@@ -109,7 +178,7 @@ function moveManyErrorQueuesBackToMain(){
 
     if [ $iRegion != "all" ]
     then
-        echo "iRegion:"
+        echo "$iRegion:"
         if [ $iEnv != "all" ]
         then
             echo "$iEnv:"

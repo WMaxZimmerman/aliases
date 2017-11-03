@@ -15,6 +15,7 @@ alias gitClean="cleanWorkspace"
 alias gitChanges="commitChangesInEachRepo"
 alias gitEach="performActionOnEachRepo"
 alias yolo="'commitAllChangesAndPushToMaster'"
+alias gcam="git commit -am"
 
 function makeBranch() {
     git branch $1
