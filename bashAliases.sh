@@ -37,6 +37,7 @@ alias subl="/c/bench/tools/cmder/vendor/Sublime3/sublime_text.exe $1 -new_consol
 alias vsc="/c/bench/tools/cmder/vendor/vsCode/Code.exe $1 -new_console"
 alias edit="$PREFERRED_EDITOR $1 -new_console"
 alias vs="'visualStudio'"
+alias ij="'intelliJ'"
 
 git config --global alias.br branch
 git config --global alias.ci commit
@@ -48,6 +49,10 @@ git config --global alias.st status
 #Functions
 function visualStudio(){
     c:/Program\ Files\ \(x86\)/Microsoft\ Visual\ Studio\ 14.0/Common7/IDE/devenv.exe $1 &
+}
+
+function intelliJ(){
+    c:/Program\ Files/JetBrains/IntelliJ\ IDEA\ 2017.1.4/bin/idea64.exe $1 &
 }
 
 function customGrep() {
