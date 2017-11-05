@@ -29,7 +29,7 @@ alias unzip="'unzipFolder'"
 
 #Emacs Aliases
 alias enw="emacs -q -nw -Q"
-alias emc="runemacs -mm"
+alias emc="emacs -mm &"
 alias diffy="diff -y"
 
 #Misc Stuff
