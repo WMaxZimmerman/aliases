@@ -1,14 +1,28 @@
 . ~/aliases/bashAliases.sh
-. ~/aliases/deereAliases.sh
 . ~/aliases/gitAliases.sh
 
-function varlist(){
-    less ~/aliases/bashAliases.sh
-    less ~/aliases/gitAliases.sh
-    less ~/aliases/deereAliases.sh
+alias aliases="'listAllAliasesWithDescriptions'"
+
+function aliases?() {
+    echo "Outputs a list of all aliases with a description about their function"
 }
 
-function testlist(){
-    grep -r -Z --color "alias " ~/aliases
-    grep -r -Z --color "function " ~/aliases
+function listAllAliasesWithDescriptions() {
+    tempFile="$TEMP/aliasTempFile.txt"
+    alias > $tempFile
+
+    searchString="alias "
+    replaceString=""
+    sed -i -e "s/$searchString/$replaceString/g" $tempFile
+    searchString="='"
+    replaceString=""
+    sed -i "s/$searchString.*$/$replaceString/g" $tempFile
+
+    while read line; do
+        echo $line
+        eval "$line?"
+        echo ""
+    done < $tempFile
+
+    rm -rf $tempFile
 }

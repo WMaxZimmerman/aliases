@@ -1,5 +1,4 @@
 #Bash Aliases
-alias alist="less ~/.bashrc"
 alias ls="ls -A --color"
 alias open="explorer"
 alias gitdiff="git difftool -y"
@@ -26,6 +25,7 @@ alias chrome="'web'"
 alias trimString="'trimString'"
 alias zip="'zipFolder'"
 alias unzip="'unzipFolder'"
+alias kill="'die'"
 
 #Emacs Aliases
 alias enw="emacs -q -nw -Q"
@@ -125,4 +125,33 @@ function dieDiscordDie(){
         temp=$(trimString $l 15 0)
         taskkill -pid $temp -f
     done < $tempFile
+}
+
+function updatePath(){
+    newDir="$1"
+    currPath="$testtest"
+    newPath="$currPath;$newDir"
+
+    echo "$newPath"
+    set testtest "$newPath"
+    setx testtest "$newPath" -m
+}
+
+function die(){
+    iProgramName=${1,,}
+    actualProgram=""
+
+    case "$iProgramName" in
+        "visualstudio")
+            actualProgram="devenv.exe"
+            ;;
+        "intellij")
+            actualProgram="idea64.exe"
+            ;;
+        *)
+            actualProgram="$iProgramName.exe"
+            ;;
+    esac
+
+    taskkill -im "$actualProgram" -f
 }
