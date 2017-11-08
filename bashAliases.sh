@@ -112,3 +112,17 @@ function unzipFolder(){
 function web(){
     /c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe $1 &
 }
+
+function dieDiscordDie(){
+    tempFile="$TEMP/diediscorddie.txt"
+    tasklist -fo CSV -fi "Imagename eq Discord.exe" -nh > $tempFile
+
+    searchString="\",\"Console"
+    replaceString=""
+    sed -i "s/$searchString.*$/$replaceString/g" $tempFile
+
+    while read l; do
+        temp=$(trimString $l 15 0)
+        taskkill -pid $temp -f
+    done < $tempFile
+}
