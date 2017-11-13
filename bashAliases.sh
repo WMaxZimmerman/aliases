@@ -155,3 +155,34 @@ function die(){
 
     taskkill -im "$actualProgram" -f
 }
+
+function udpateNugetPackage(){
+    csProj=$1
+    apiKey=$2
+    tempFile="$TEMP/updateNugetPackageTemp.txt"
+    packageFile=""
+
+    nuget pack $csProj > $tempFile
+
+    searchString="\\\\"
+    replaceString="\/"
+    sed -i "s/$searchString/$replaceString/g" $tempFile
+    searchString="Successfully created package '"
+    replaceString=""
+    sed -i "s/.*$searchString/$replaceString/g" $tempFile
+    searchString="'"
+    replaceString=""
+    sed -i "s/$searchString.*$/$replaceString/g" $tempFile
+
+    while read line; do
+        if [[ "$line" = "C:/"* ]]; then
+            packageFile=$(echo "$line")
+        fi
+    done < $tempFile
+
+    #echo "$packageFile"
+    nuget push "$packageFile" $apiKey -Source https://www.nuget.org/api/v2/package
+
+    #echo $tempFile
+    rm -rf $tempFile
+}
