@@ -6,16 +6,15 @@
 . ~/aliases/bashAliasesHelp.sh
 . ~/aliases/gitAliasesHelp.sh
 
-alias aliases="'listAllAliases'"
+alias aliases="'listAllAliasesWithDocumentation'"
 
 function aliases?(){
-    echo "Outputs a list of all aliases along with their corresponding documentation."
+    echo "Outputs a list of all aliases with their corresponding documentation."
 }
 
-function listAllAliases(){
+function listAllAliasesWithDocumentation(){
     tempFile="$TEMP/aliasList.txt"
-    alias > $tempFile
-
+    alias >$tempFile
     searchString="alias "
     replaceString=""
     sed -i "s/$searchString/$replaceString/g" $tempFile

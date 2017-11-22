@@ -36,6 +36,7 @@ alias chrome="'web'"
 alias kill="'die'"
 alias enw="emacs -q -nw -Q"
 alias emc="'launchEmacs'"
+alias nugetUpdate="'udpateNugetPackage'"
 
 #Functions
 function visualStudio(){

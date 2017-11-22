@@ -151,3 +151,10 @@ function ij?() {
 function ide?() {
     echo "Dynamically launches a new instance of Visual Studio or IntelliJ for your current working directory."
 }
+
+function nugetUpdate?(){
+    echo "Builds and publishes a new version of a NuGet Packages."
+    echo "Parameters (csproj apiKey)"
+    echo "$indentString csproj: The path to the csproj file you want to publish"
+    echo "$indentString apiKey: The api key for your NuGet account."
+}
