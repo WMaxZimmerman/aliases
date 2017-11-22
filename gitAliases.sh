@@ -16,6 +16,14 @@ alias gitChanges="commitChangesInEachRepo"
 alias gitEach="performActionOnEachRepo"
 alias yolo="'commitAllChangesAndPushToMaster'"
 alias gcam="git commit -am"
+alias gdiff="git difftool -y"
+
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.co checkout
+git config --global alias.rb rebase
+git config --global alias.st status
+#git config --global alias.logg "log --graph --decorate --author-date-order --date=relative --format=format:'%C(bold cyan)%h%C(reset) %C(white)%s%C(bold yellow)%d%C(reset)%n''        %C(cyan)%aD %C(bold green)(%ar)%C(reset)%C(green) - %an' --all"
 
 function makeBranch() {
     git branch $1

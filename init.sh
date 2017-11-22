@@ -1,28 +1,31 @@
+#Alias Files
 . ~/aliases/bashAliases.sh
 . ~/aliases/gitAliases.sh
 
-alias aliases="'listAllAliasesWithDescriptions'"
+#Documentation Files
+. ~/aliases/bashAliasesHelp.sh
+. ~/aliases/gitAliasesHelp.sh
 
-function aliases?() {
-    echo "Outputs a list of all aliases with a description about their function"
+alias aliases="'listAllAliases'"
+
+function aliases?(){
+    echo "Outputs a list of all aliases along with their corresponding documentation."
 }
 
-function listAllAliasesWithDescriptions() {
-    tempFile="$TEMP/aliasTempFile.txt"
+function listAllAliases(){
+    tempFile="$TEMP/aliasList.txt"
     alias > $tempFile
 
     searchString="alias "
     replaceString=""
-    sed -i -e "s/$searchString/$replaceString/g" $tempFile
-    searchString="='"
+    sed -i "s/$searchString/$replaceString/g" $tempFile
+    searchString="="
     replaceString=""
     sed -i "s/$searchString.*$/$replaceString/g" $tempFile
 
-    while read line; do
-        echo $line
-        eval "$line?"
+    while read l; do
+        echo "$l"
+        eval "$l?"
         echo ""
     done < $tempFile
-
-    rm -rf $tempFile
 }

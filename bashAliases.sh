@@ -1,50 +1,41 @@
-#Bash Aliases
-alias ls="ls -A --color"
-alias open="explorer"
-alias gitdiff="git difftool -y"
-alias unlink="npm rm --global"
-
+#File System
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ll="ls -la"
-
-#System Aliases
+alias ls="ls -A --color"
 alias e="explorer"
+alias mcd="'mkdirAndCd'"
+
+#Usability
 alias reload="source ~/.bashrc"
+alias clr="clear"
+
+#System
 alias imout="shutdown -s -f -t 0"
 alias imoutat="'imoutat'"
 alias imin="shutdown -a"
 alias restart="shutdown -r -f -t 0"
 alias lock="rundll32.exe user32.dll,LockWorkStation"
-alias clr="clear"
+
+#Utility
 alias grp="'customGrep'"
-alias mcd="'mkdirAndCd'"
-alias chrome="'web'"
 alias trimString="'trimString'"
 alias zip="'zipFolder'"
 alias unzip="'unzipFolder'"
-alias kill="'die'"
-
-#Emacs Aliases
-alias enw="emacs -q -nw -Q"
-alias emc="emacs -mm &"
 alias diffy="diff -y"
 
-#Misc Stuff
+#Applications Stuff
 alias subl="/c/bench/tools/cmder/vendor/Sublime3/sublime_text.exe $1 -new_console"
 alias vsc="/c/bench/tools/cmder/vendor/vsCode/Code.exe $1 -new_console"
 alias edit="$PREFERRED_EDITOR $1 -new_console"
 alias vs="'visualStudio'"
 alias ij="'intelliJ'"
-
-git config --global alias.br branch
-git config --global alias.ci commit
-git config --global alias.co checkout
-git config --global alias.rb rebase
-git config --global alias.st status
-#git config --global alias.logg "log --graph --decorate --author-date-order --date=relative --format=format:'%C(bold cyan)%h%C(reset) %C(white)%s%C(bold yellow)%d%C(reset)%n''        %C(cyan)%aD %C(bold green)(%ar)%C(reset)%C(green) - %an' --all"
+alias chrome="'web'"
+alias kill="'die'"
+alias enw="emacs -q -nw -Q"
+alias emc="'launchEmacs'"
 
 #Functions
 function visualStudio(){
@@ -185,4 +176,14 @@ function udpateNugetPackage(){
 
     #echo $tempFile
     rm -rf $tempFile
+}
+
+function launchEmacs(){
+    os=$OSTYPE
+    if [[ "$os" = "msys" ]];
+    then
+        runemacs -mm
+    else
+        emacs -mm &
+    fi
 }
