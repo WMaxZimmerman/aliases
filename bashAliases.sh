@@ -107,20 +107,6 @@ function web(){
     /c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe $1 &
 }
 
-function dieDiscordDie(){
-    tempFile="$TEMP/diediscorddie.txt"
-    tasklist -fo CSV -fi "Imagename eq Discord.exe" -nh > $tempFile
-
-    searchString="\",\"Console"
-    replaceString=""
-    sed -i "s/$searchString.*$/$replaceString/g" $tempFile
-
-    while read l; do
-        temp=$(trimString $l 15 0)
-        taskkill -pid $temp -f
-    done < $tempFile
-}
-
 function updatePath(){
     newDir="$1"
     currPath="$testtest"
@@ -148,12 +134,6 @@ function die(){
     esac
 
     taskkill -im "$actualProgram" -f
-}
-
-function playSound(){
-    "C:\Program Files (x86)\Windows Media Player\wmplayer.exe" "C:\bench\Share\sounds\batman.mp3" &
-    sleep 15
-    taskkill -im "wmplayer.exe" -f
 }
 
 function udpateNugetPackage(){
