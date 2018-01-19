@@ -25,10 +25,12 @@ alias trimString="'trimString'"
 alias zip="'zipFolder'"
 alias unzip="'unzipFolder'"
 alias diffy="diff -y"
+alias rename="'renameFile'"
+alias move="'moveFileToDifferentDirectory'"
 
 #Applications Stuff
 alias subl="/c/bench/tools/cmder/vendor/Sublime3/sublime_text.exe $1 -new_console"
-alias vsc="/c/bench/tools/cmder/vendor/vsCode/Code.exe $1 -new_console"
+alias vsc="/c/bench/tools/cmder/vendor/vsCode/Code.exe &"
 alias edit="$PREFERRED_EDITOR $1 -new_console"
 alias vs="'visualStudio'"
 alias ij="'intelliJ'"
@@ -148,6 +150,12 @@ function die(){
     taskkill -im "$actualProgram" -f
 }
 
+function playSound(){
+    "C:\Program Files (x86)\Windows Media Player\wmplayer.exe" "C:\bench\Share\sounds\batman.mp3" &
+    sleep 15
+    taskkill -im "wmplayer.exe" -f
+}
+
 function udpateNugetPackage(){
     csProj=$1
     apiKey=$2
@@ -187,4 +195,22 @@ function launchEmacs(){
     else
         emacs -mm &
     fi
+}
+
+function moveFileToDifferentDirectory(){
+    fileString=$1
+    newDir=$2
+    fileName=$(baseName $fileString)
+
+    mv $fileString "$newDir$fileName"
+}
+
+function renameFile(){
+    fileString=$1
+    newName=$2
+    fileName=$(baseName $fileString)
+    oLength=${#fileName}
+    directoryString=$(trimString "$fileString" 0 $oLength)
+
+    mv $fileString "$directoryString$newName"
 }
