@@ -2,14 +2,15 @@
 . ~/aliases/bashAliases.sh
 . ~/aliases/gitAliases.sh
 
-#Documentation Files
-. ~/aliases/bashAliasesHelp.sh
-. ~/aliases/gitAliasesHelp.sh
+indentString="  "
+alias aliases="'listAllAliasesWithDescriptions'"
+function aliases?() {
+    echo "Outputs a list of all aliases with a description about their function"
+}
 
-alias aliases="'listAllAliasesWithDocumentation'"
-
-function aliases?(){
-    echo "Outputs a list of all aliases with their corresponding documentation."
+alias aliasesSansDoc="'listAllAliasesWithoutDocumentation'"
+function aliasesSansDoc?() {
+    echo "Outputs a list of all aliases that do not have documentation."
 }
 
 function listAllAliasesWithDocumentation(){
@@ -27,4 +28,8 @@ function listAllAliasesWithDocumentation(){
         eval "$l?"
         echo ""
     done < $tempFile
+}
+
+function listAllAliasesWithoutDocumentation() {
+    aliases | grep "command not found"
 }

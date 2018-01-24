@@ -1,23 +1,103 @@
 #Git Aliases
 alias gas="git add -A && git status"
-alias glg='git log --pretty=format:"%C(green)%h %C(bold green)%ad%C(yellow)%d %Creset%s%C(green) [%cn]" --decorate --date=short'
-alias gl="git log --oneline --all --graph --decorate  $*"
-alias gpr="git pull -r"
-alias gst="git status"
-alias gh="git log --pretty=format:'%Cgreen%h%Creset %ad | %s%Cred%d %Cblue[%an]%Creset ' --graph --date=short"
-alias changedFiles="git diff --name-only"
-alias mkbranch="'makeBranch'"
-alias gopen="'openInGitHub'"
-alias gcb="git branch | grep '*'"
-alias gitgone='deleteRepoAndReclone'
-alias gitUrl="git config --get remote.origin.url"
-alias gitClean="cleanWorkspace"
-alias gitChanges="commitChangesInEachRepo"
-alias gitEach="performActionOnEachRepo"
-alias yolo="'commitAllChangesAndPushToMaster'"
-alias gcam="git commit -am"
-alias gdiff="git difftool -y"
+function gas?() {
+    echo "Stages all git changes and then outputs the git status."
+}
 
+alias glg='git log --pretty=format:"%C(green)%h %C(bold green)%ad%C(yellow)%d %Creset%s%C(green) [%cn]" --decorate --date=short'
+function glg?() {
+    echo "Outputs a formatted single line for each git log."
+}
+
+alias gl="git log --oneline --all --graph --decorate  $*"
+function gl?() {
+    echo "Outputs a single line for each git log with a graph of the branching."
+}
+
+alias gpr="git pull -r"
+function gpr?() {
+    echo "Performs a git pull rebase on the current repo."
+}
+
+alias gst="git status"
+function gst?() {
+    echo "Outputs the git status of the current repo."
+}
+
+alias gh="git log --pretty=format:'%Cgreen%h%Creset %ad | %s%Cred%d %Cblue[%an]%Creset ' --graph --date=short"
+function gh?() {
+    echo "Outputs a formatted single line for each git log with a graph of the branching."
+}
+
+alias gopen="'openInGitHub'"
+function gopen?() {
+    echo "Opens your preferred web browser and navigates to the github page for your current repo and branch."
+}
+
+alias gcb="git branch | grep '*'"
+function gcb?() {
+    echo "Outputs the current branch of the repo."
+}
+
+alias gitgone="'deleteRepoAndReclone'"
+function gitgone?() {
+    echo "Removes the directory for the repo and then reclones it your machine."
+}
+
+alias gurl="git config --get remote.origin.url"
+function gurl?() {
+    echo "Outputs the url for the git repo."
+}
+
+alias gclean="cleanWorkspace"
+function gclean?() {
+    echo "Performs a hard reset on the current repo."
+}
+
+alias gchanges="commitChangesInEachRepo"
+function gchanges?() {
+    echo "Outputs the number of files changed and the name of each changed file."
+}
+
+alias geach="performActionOnEachRepo"
+function geach?() {
+    echo "Performs the given action on each git repo in the current directory."
+    echo "Parameters (actionToBePerformed)"
+    echo "$indentString actionToBePerformed: A bash command to be executed on each repo"
+    echo "WARNING: This is a powerful command that will execute what ever you give it on each repo."
+}
+
+alias gcam="git commit -am"
+function gcam?() {
+    echo "Preforms a git commit on the current repo."
+    echo "Parameters (message)"
+    echo "$indentString message: The commit message for the the commit"
+}
+
+alias gdiff="git difftool -y"
+function gdiff?() {
+    echo "Launches the git diff tool."
+}
+
+alias changedFiles="git diff --name-only"
+function changedFiles?() {
+    echo "Outputs a list of all of the changed files in the current repo."
+}
+
+alias mkbranch="'makeBranch'"
+function mkbranch?() {
+    echo "Creates a new git branch with the given name and sets that as your current branch."
+    echo "Parameters (branchName)"
+    echo "$indentString branchName: The name of the branch that you want to create"
+}
+
+alias yolo="'commitAllChangesAndPushToMaster'"
+function yolo?() {
+    echo "Commits all of the changes for the current repository and force pushes them to master."
+    echo "This should probably not be used on any repo more than just one person is in."
+}
+
+#Not sure what these actually do.
 git config --global alias.br branch
 git config --global alias.ci commit
 git config --global alias.co checkout
@@ -33,7 +113,6 @@ function makeBranch() {
 
 function openInGitHub() {
     status=$(git status)
-    #echo "status = $status"
     branch="master"
 
     count=0
@@ -46,8 +125,7 @@ function openInGitHub() {
         fi
     done
 
-    #echo "branch = $branch"
-    url=$(gitUrl)
+    url=$(gurl)
 
     if [[ $url != *"https"* ]];
     then
@@ -58,17 +136,13 @@ function openInGitHub() {
     fi
 
     url="$url/tree/$branch"
-    #echo "url = $url"
-    chrome $url
+    web $url
 }
 
 function deleteRepoAndReclone() {
-    url=$(gitUrl)
-    #echo $url
+    url=$(gurl)
     dir=$PWD
-    #echo $dir
     cd ..
-    #echo $PWD
     rm -rf $dir
     git clone $url
     cd $dir
@@ -86,18 +160,10 @@ function performActionOnEachRepo() {
     cd $dir
 }
 
-function commitAllChangesAndPushToMaster(){
-    git add -A
-    git commit -am "YOLO"
-    git push origin master --force
-}
-
 function commitChangesInEachRepo() {
     fileCount=$(changedFiles | wc -l)
-    #echo $fileCount
     if (( $fileCount > 0)); then
         echo $PWD
-        #echo $repoDir
         echo $fileCount
         changedFiles
         echo ""
@@ -113,11 +179,17 @@ function cleanWorkspace() {
 
 function deleteRepoIfExternal() {
     tempDir=$PWD
-    tempUrl=$(gitUrl)
+    tempUrl=$(gurl)
     if [[ $tempUrl == *"githubext"* ]];
     then
         echo $tempDir
         cd ..
         rm -rf $tempDir
     fi
+}
+
+function commitAllChangesAndPushToMaster(){
+    git add -A
+    git commit -am "YOLO"
+    git push origin master --force
 }
