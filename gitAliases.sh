@@ -97,6 +97,12 @@ function yolo?() {
     echo "This should probably not be used on any repo more than just one person is in."
 }
 
+alias gprf="'updateForkFromSource'"
+function gprf?() {
+    echo "Updates a forked repository with the source repo."
+}
+
+
 #Not sure what these actually do.
 git config --global alias.br branch
 git config --global alias.ci commit
@@ -104,6 +110,12 @@ git config --global alias.co checkout
 git config --global alias.rb rebase
 git config --global alias.st status
 #git config --global alias.logg "log --graph --decorate --author-date-order --date=relative --format=format:'%C(bold cyan)%h%C(reset) %C(white)%s%C(bold yellow)%d%C(reset)%n''        %C(cyan)%aD %C(bold green)(%ar)%C(reset)%C(green) - %an' --all"
+
+function updateForkFromSource() {
+    git fetch upstream
+    git checkout master
+    git merge upstream/master
+}
 
 function makeBranch() {
     git branch $1
