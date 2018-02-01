@@ -94,7 +94,7 @@ function mkbranch?() {
 alias yolo="'commitAllChangesAndPushToMaster'"
 function yolo?() {
     echo "Commits all of the changes for the current repository and force pushes them to master."
-    echo "This should probably not be used on any repo more than just one person is in."
+    echo "WARNING: This should probably not be used on any repo more than just one person is in."
 }
 
 alias gprf="'updateForkFromSource'"
