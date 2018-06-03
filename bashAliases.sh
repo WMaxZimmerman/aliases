@@ -247,7 +247,7 @@ function nugetUpdate?(){
 
 #Functions
 function visualStudio(){
-    c:/Program\ Files\ \(x86\)/Microsoft\ Visual\ Studio\ 14.0/Common7/IDE/devenv.exe $1 &
+    c:/Program\ Files\ \(x86\)/Microsoft\ Visual\ Studio/2017/Community/Common7/IDE/devenv.exe $1 &
 }
 
 function intelliJ(){
