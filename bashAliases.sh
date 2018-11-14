@@ -245,6 +245,16 @@ function nugetUpdate?(){
     echo "$indentString apiKey: The api key for your NuGet account."
 }
 
+alias mineserver="'launchMinecraftServer'"
+function mineserver?(){
+    echo "Launches the minecraft server on my machine."
+}
+
+alias nunit="/C/Program\ Files\ \(x86\)/NUnit.org/nunit-console/nunit3-console.exe"
+function nunit?(){
+    echo "Runs NUnit tests for .Net projects."
+}
+
 #Functions
 function visualStudio(){
     c:/Program\ Files\ \(x86\)/Microsoft\ Visual\ Studio/2017/Community/Common7/IDE/devenv.exe $1 &
@@ -409,4 +419,12 @@ function renameFile(){
     directoryString=$(trimString "$fileString" 0 $oLength)
 
     mv $fileString "$directoryString$newName"
+}
+
+function launchMinecraftServer(){
+    currDir=${pwd}
+    echo $currDir
+    cd /c/users/Max/Desktop/Minecraft/server
+    java -Xmx1024M -Xms1024M -jar server.jar nogui
+    cd "$currDir"
 }

@@ -1,6 +1,7 @@
 #Alias Files
 . ~/aliases/bashAliases.sh
 . ~/aliases/gitAliases.sh
+. ~/aliases/dotnetAliases.sh
 
 indentString="  "
 alias aliases="'listAllAliasesWithDescriptions'"
