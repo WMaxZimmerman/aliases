@@ -14,7 +14,6 @@ function createDotnetDataAccessLayer {
     local projectName=$1
 
     dotnet new classlib -n $projectName.DAL
-
     dotnet sln $projectName.sln add "$projectName.DAL/$projectName.DAL.csproj"
 
     pushd $projectName.DAL
@@ -22,11 +21,13 @@ function createDotnetDataAccessLayer {
     # === Clean up unwanted Files ===
     rm -f Class1.cs
 
-    mcd Repositories
+    # === Structuring ===
+    mkdir Repositories
+    pushd Repositories # Entering Repositories
 
     # === Create Example Repository
     touch ExampleRepository.cs
-    echo "namespace AliasTest.DAL.Repositories" >> ExampleRepository.cs
+    echo "namespace $projectName.DAL.Repositories" >> ExampleRepository.cs
     echo "{" >> ExampleRepository.cs
     echo "    public class ExampleRepository" >> ExampleRepository.cs
     echo "    {" >> ExampleRepository.cs
@@ -36,8 +37,10 @@ function createDotnetDataAccessLayer {
     echo "        }" >> ExampleRepository.cs
     echo "    }" >> ExampleRepository.cs
     echo "}" >> ExampleRepository.cs
+
+    popd # Leaving Repositories
     
-    popd
+    popd # Back to solution root
 }
 
 function createDotnetApplicationCore {
@@ -45,7 +48,6 @@ function createDotnetApplicationCore {
 
     dotnet new classlib -n $projectName.ApplicationCore
     dotnet sln $projectName.sln add "$projectName.ApplicationCore/$projectName.ApplicationCore.csproj"
-    
     dotnet add "$projectName.ApplicationCore/$projectName.ApplicationCore.csproj" reference "$projectName.DAL/$projectName.DAL.csproj"
 
     pushd $projectName.ApplicationCore
@@ -56,9 +58,9 @@ function createDotnetApplicationCore {
     mcd Services
     # === Create ExampleService.cs ===
     touch ExampleService.cs
-    echo "using AliasTest.DAL.Repositories;" >> ExampleService.cs
+    echo "using $projectName.DAL.Repositories;" >> ExampleService.cs
     echo "" >> ExampleService.cs
-    echo "namespace AliasTest.ApplicationCore.Services" >> ExampleService.cs
+    echo "namespace $projectName.ApplicationCore.Services" >> ExampleService.cs
     echo "{" >> ExampleService.cs
     echo "    public class ExampleService" >> ExampleService.cs
     echo "    {" >> ExampleService.cs
@@ -91,7 +93,7 @@ function createDotnetConsole {
     touch Program.cs
     echo "using CommandAndConquer.CLI.Core;" >> Program.cs
     echo "" >> Program.cs
-    echo "namespace AliasTest.Console" >> Program.cs
+    echo "namespace $projectName.Console" >> Program.cs
     echo "{" >> Program.cs
     echo "   class Program" >> Program.cs
     echo "   {" >> Program.cs
@@ -116,10 +118,10 @@ function createDotnetConsole {
 
     # === Create the Example Controller ===
     touch ExampleController.cs
-    echo "using AliasTest.ApplicationCore.Services;" >> ExampleController.cs
+    echo "using $projectName.ApplicationCore.Services;" >> ExampleController.cs
     echo "using CommandAndConquer.CLI.Attributes;" >> ExampleController.cs
     echo "" >> ExampleController.cs
-    echo "namespace AliasTest.Console.Controllers" >> ExampleController.cs
+    echo "namespace $projectName.Console.Controllers" >> ExampleController.cs
     echo "{" >> ExampleController.cs
     echo "    [CliController(\"example\", \"An example of a CLI Controller\")]" >> ExampleController.cs
     echo "    public class ExampleController" >> ExampleController.cs
@@ -132,6 +134,5 @@ function createDotnetConsole {
     echo "    }" >> ExampleController.cs
     echo "}" >> ExampleController.cs
     
-    popd # return to project root
+    popd
 }
-
