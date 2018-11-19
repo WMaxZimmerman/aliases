@@ -1,3 +1,22 @@
+alias coresln="'createDotnetNtierProject'"
+function coresln?() {
+    echo "Creates a new dotnet core solution and project structure with the given name."
+    echo "Parameters (solutionName)"
+    echo "$indentString solutionName: The name of the application that you are making."
+}
+
+function runDotnetFrameworkProject {
+    project=$1
+    msbuild.exe "$project/$project.csproj"
+
+    echo ""
+    echo "=== Starting Application ==="
+    echo ""
+    
+    $project/bin/debug/$project.exe
+}
+
+
 function createDotnetNtierProject {
     local projectName=$1
 
