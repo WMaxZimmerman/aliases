@@ -15,7 +15,7 @@ function csrun?() {
 
 function runDotnetFrameworkProject {
     project=$1
-    msbuild.exe "$project/$project.csproj"
+    msbuild.exe "$project/$project.csproj" -t:rebuild
 
     echo ""
     echo "=== Starting Application ==="
