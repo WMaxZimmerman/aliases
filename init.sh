@@ -1,10 +1,5 @@
-#Alias Files
-. ~/aliases/bashAliases.sh
-. ~/aliases/gitAliases.sh
-. ~/aliases/dotnetAliases.sh
-
 indentString="  "
-alias aliases="'listAllAliasesWithDescriptions'"
+alias aliases="'listAllAliasesWithDocumentation'"
 function aliases?() {
     echo "Outputs a list of all aliases with a description about their function"
 }
@@ -34,3 +29,8 @@ function listAllAliasesWithDocumentation(){
 function listAllAliasesWithoutDocumentation() {
     aliases | grep "command not found"
 }
+
+#Alias Files
+. ~/aliases/bashAliases.sh
+. ~/aliases/gitAliases.sh
+. ~/aliases/dotnetAliases.sh
