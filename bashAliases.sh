@@ -1,198 +1,150 @@
 #Navigation Aliases
-alias ..="'goBackOneDirectory'"
-function goBackOneDirectory {
-    description="Navigates back one directory."
-    verifyParameters "$@" || return 1
-
-    cd ..
+alias ..="cd .."
+function ..?() {
+    echo "Navigates back one directory."
 }
 
-alias ...="'goBackTwoDirectories'"
-function goBackTwoDirectories {
-    description="Navigates back two directories."
-    verifyParameters "$@" || return 1
-
-    cd ../..
+alias ...="cd ../.."
+function ...?() {
+    echo "Navigates back two directories."
 }
 
-alias ....="'goBackThreeDirectories'"
-function goBackThreeDirectories {
-    description="Navigates back three directories."
-    verifyParameters "$@" || return 1
-
-    cd ../../..
+alias ....="cd ../../.."
+function ....?() {
+    echo "Navigates back three directories."
 }
 
-alias .....="'goBackFourDirectories'"
-function goBackFourDirectories {
+alias .....="cd ../../../.."
+function .....?() {
     echo "Navigates back four directories."
-    verifyParameters "$@" || return 1
-    
-    cd ../../../..
 }
 
 #System Aliases
 alias e="explorer"
-function openExplorer {
+function e?() {
     echo "Launches the file explorer to the given location."
-    declare -a paramNames=("location:string:optional")
-    verifyParameters "$@" || return 1
-
-    explorer "$location"
+    echo "Parameters (location)"
+    echo "$indentString location: The location to be open in the file explorer."
+    echo "NOTE: The parameter is optional"
 }
 
-alias reload="'resourceBashrc'"
-function resourceBashrc {
-    description="Reloads or resets all aliases. (useful if making or pulling changes to the alias files.)"
-    verifyParameters "$@" || return 1
-    source ~/.bashrc
+alias reload="source ~/.bashrc"
+function reload?() {
+    echo "Reloads or resets all aliases. (useful if making or pulling changes to the aliase files.)"
 }
 
-alias imout="'forceShutdown'"
-function forceShutdown {
-    description="Performs a forced system shutdown."
-    verifyParameters "$@" || return 1
-    shutdown -s -f -t 0
+alias imout="shutdown -s -f -t 0"
+function imout?() {
+    echo "Performs a forced system shutdown."
 }
 
-alias imoutat="'forceShutdownAtTime'"
-function forceShutdownAtTime {
-    description="Schedule a task to force shutdown your system at the specified time."
-    declare -a paramNames=(
-	"h:number:required"
-	"m:number:optional")
-    verifyParameters "$@" || return 1
-
-    local cHour=$(date +%-H)
-    local cMinute=$(date +%-M)
-    local cSecond=$(date +%-S)
-
-    if [ $h -lt 7 ]
-    then
-        h=$((h+12))
-    fi
-
-    local dMinute=$((m-cMinute))
-    local dHour=$((h-cHour))
-    local dHour=$((dHour*60))
-    local dMinute=$((dMinute+dHour))
-    local dSecond=$((dMinute*60))
-    local dSecond=$((dSecond-cSecond))
-
-    shutdown -s -f -t $dSecond
+alias imoutat="'imoutat'"
+function imoutat?() {
+    echo "Schedule a task to force shutdown your system at the specified time."
+    echo "Parameters (hour minute)"
+    echo "$indentString hour: The hour that you would like your system to shutdown."
+    echo "$indentString minute: The minute that you would like your system to shutdown."
+    echo "NOTE: The minute parameter is optional and will be considered 0 if omitted."
+    echo "The time will be set as PM if the hour is less than 7 otherwise it will be AM."
 }
 
-alias imin="'abortShutdown'"
-function abortShutdown {
-    description="Aborts any shutdown that is scheduled."
-    verifyParameters "$@" || return 1
-    shutdown -a
+alias imoutin="'imoutin'"
+function imoutin?() {
+    echo "Schedule a task to force shutdown your system in the specified amount of time."
+    echo "Parameters (hour minute)"
+    echo "$indentString hour: The hour that you would like your system to shutdown."
+    echo "$indentString minute: The minute that you would like your system to shutdown."
+    echo "NOTE: The minute parameter is optional and will be considered 0 if omitted."
 }
 
-alias restart="'restartMachine'"
-function restartMachine {
-    description="Performs a forced system restarts."
-    verifyParameters "$@" || return 1
-    shutdown -r -f -t 0
+alias imin="shutdown -a"
+function imin?() {
+    echo "Aborts any shutdown that is scheduled."
 }
 
-alias lock="'lockMachine'"
-function lockMachine {
-    description="Locks your computer."
-    verifyParameters "$@" || return 1
-    rundll32.exe user32.dll,LockWorkStation
+alias restart="shutdown -r -f -t 0"
+function restart?() {
+    echo "Performs a forced system restarts."
+}
+
+alias lock="rundll32.exe user32.dll,LockWorkStation"
+function lock?() {
+    echo "Locks your computer."
+}
+
+alias clr="clear"
+function clr?() {
+    echo "Clears all of the output in the terminal."
+}
+
+alias grp="'customGrep'"
+function grp?() {
+    echo "Performs a recursive grep in the current directory searching for the given string and outputing a colored result"
+    echo "Parameters (searchString)"
+    echo "$indentString searchString: The string to search for."
 }
 
 alias mcd="'mkdirAndCd'"
-function mkdirAndCd {
-    description="Creates the given directory and then sets that as the current working directory."
-    declare -a paramNames=("dir:string:required")
-    verifyParameters "$@" || return 1
-    
-    mkdir -p $dir
-    cd $dir
+function mcd?() {
+    echo "Creates the given directory and then sets that as the current working directory."
+    echo "Parameters (directory)"
+    echo "$indentString directory: The directory that you wish to create."
 }
 
-alias web="'openWebBrowser'"
-function openWebBrowser {
-    description="Launches your preferred web browser to the given location."
-    declare -a paramNames=("url:string:option")
-    verifyParameters "$@" || return 1
-    
-    /c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe "$url" &
+alias web="'web'"
+function web?() {
+    echo "Launches your preferred web browser to the given location."
+    echo "Parameters (url)"
+    echo "$indentString url: The url that you want opened"
+    echo "NOTE: The url parameter is optional and a new browser will be opened to your home page if omitted."
 }
 
-alias trim="'trimString'"
-function trimString {
-    description="Outputs the given string with given amount of characters trimed off of the beginning and end."
-    declare -a paramNames=(
-	"s:string:required"
-	"head:number:required"
-	"tail:number:required"
-    )
-    verifyParameters "$@" || return 1
-
-    local oLength=${#s}
-    local cLength=$[head+tail]
-    local nLength=$[oLength-cLength]
-    echo ${s:head:nLength}
+alias trimString="'trimString'"
+function trimString?() {
+    echo "Outputs the given string with given amount of characters trimed off of the beginning and end."
+    echo "Paramters (string headTrim tailTrim)"
+    echo "$indentString string: The string that you whish to trim."
+    echo "$indentString headTrim: The number of characters to trim off of the begging of the given string."
+    echo "$indentString tailTrim: The number of characters to trim off of the end of the given string."
 }
 
 alias zip="'zipFolder'"
-function zipFolder {
-    description="Compresses the given folder to a zip file of the same name."
-    declare -a paramNames=("dir:string:required")
-    verifyParameters "$@" || return 1
-
-    local fileName=$dir
-    7z a "$dir.zip" "$dir"
+function zip?() {
+    echo "Compresses the given folder to a zip file of the same name."
+    echo "Parameters (directory)"
+    echo "$indentString directory: The directory that you wish to compress."
 }
 
 alias unzip="'unzipFolder'"
-function unzipFolder {
-    description="Uncompress the given zip file to a directory of the same name."
-    declare -a paramNames=("file:string:required")
-    verifyParameters "$@" || return 1
-    
-    local fileName=$file
-    7z e $fileName
+function unzip?() {
+    echo "Uncompress the given zip file to a directory of the same name."
+    echo "Parameters (zipFile)"
+    echo "$indentString zipFile: The name of the zip file you want to uncompress."
 }
 
-alias ll="'verticalList'"
-function verticalList {
-    description="Outputs a vertical list of the contents of the current directory."
-    verifyParameters "$@" || return 1
-
-    ls -la
+alias ll="ls -la"
+function ll?() {
+    echo "Outputs a vertical list of the contents of the current directory."
 }
 
-alias ls="'tableList'"
-function tableList {
-    description="Outputs a table list of the contents of the current directory."
-    verifyParameters "$@" || return 1
-
-    ls -A --color
+alias ls="ls -A --color"
+function ls?() {
+    echo "Outputs a table list of the contents of the current directory."
 }
 
-alias unlink="'npmUnlink'"
-function npmUnlink {
-    description="Globally removes the given npm package."
-    declare -a paramNames=("p:string:required")
-    verifyParameters "$@" || return 1
-
-    npm rm --global "$p"
+alias unlink="npm rm --global"
+function unlink?() {
+    echo "Globally removes the given npm package."
+    echo "Parameters (package)"
+    echo "$indentString package: The name of the package to be removed."
 }
 
-alias diffy="'diffFiles'"
-function diffFiles {
-    description="Globally removes the given npm package."
-    declare -a paramNames=(
-	"f1:string:required"
-	"f2:string:required"
-    )
-    verifyParameters "$@" || return 1
-
-    diff -y "$f1" "$f2"
+alias diffy="diff -y"
+function diffy?() {
+    echo "Opens the given two files in the diff tool for comparison."
+    echo "Parameters (firstFile secondFile)"
+    echo "$indentString firstFile: The name of the first file to be comparred."
+    echo "$indentString secondFile: The name of the second file to be comparred."
 }
 
 alias kill="'die'"
@@ -323,13 +275,62 @@ function ide(){
     fi
 }
 
-
-
-alias grp="'customGrep'"
 function customGrep() {
-    declare -a paramNames=("filter:string:required")
-    verifyParameters "$@" || return 1
     grep -r -n -Z --color "$1" .
+}
+
+function mkdirAndCd() {
+    mkdir -p $1
+    cd $1
+}
+
+function trimString(){
+    string=$1
+    headTrim=$2
+    tailTrim=$3
+
+    oLength=${#string}
+    cLength=$[headTrim+tailTrim]
+    nLength=$[oLength-cLength]
+    string=${string:headTrim:nLength}
+
+    echo $string
+}
+
+function imoutat(){
+    cHour=$(date +%-H)
+    cMinute=$(date +%-M)
+    cSecond=$(date +%-S)
+    iHour=$1
+    iMinute=$2
+
+    if [ $iHour -lt 7 ]
+    then
+        iHour=$((iHour+12))
+    fi
+
+    dMinute=$((iMinute-cMinute))
+    dHour=$((iHour-cHour))
+    dHour=$((dHour*60))
+    dMinute=$((dMinute+dHour))
+    dSecond=$((dMinute*60))
+    dSecond=$((dSecond-cSecond))
+
+    shutdown -s -f -t $dSecond
+}
+
+function zipFolder(){
+    fileName=$1
+    7z a "$1.zip" "$1"
+}
+
+function unzipFolder(){
+    fileName=$1
+    7z e $fileName
+}
+
+function web(){
+    /c/Program\ Files\ \(x86\)/Google/Chrome/Application/chrome.exe $1 &
 }
 
 function updatePath(){
