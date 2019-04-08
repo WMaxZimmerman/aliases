@@ -34,6 +34,7 @@ function createDotnetNtierProject {
     createDotnetDataAccessLayer $projectName
     createDotnetApplicationCore $projectName
     createDotnetConsole $projectName
+    createDotnetTestProject $projectName
 }
 
 function createDotnetDataAccessLayer {
@@ -159,6 +160,35 @@ function createDotnetConsole {
     echo "        }" >> ExampleController.cs
     echo "    }" >> ExampleController.cs
     echo "}" >> ExampleController.cs
+    
+    popd
+}
+
+
+function createDotnetTestProject {
+    local projectName=$1
+
+    # === Project Setup ===
+    dotnet new xunit -n $projectName.Tests
+    dotnet sln $projectName.sln add "$projectName.Tests/$projectName.Tests.csproj"
+
+    # === Add Project Dependencies ===
+    dotnet add "$projectName.Tests/$projectName.Tests.csproj" reference "$projectName.DAL/$projectName.DAL.csproj"
+    dotnet add "$projectName.Tests/$projectName.Tests.csproj" reference "$projectName.ApplicationCore/$projectName.ApplicationCore.csproj"
+    dotnet add "$projectName.Tests/$projectName.Tests.csproj" reference "$projectName.Console/$projectName.Console.csproj"
+    dotnet add "$projectName.Tests/$projectName.Tests.csproj" package System.Configuration.ConfigurationManager
+    dotnet add "$projectName.Tests/$projectName.Tests.csproj" package WMZ.CommandAndConquer.CLI
+
+    pushd $projectName.Tests
+
+    # === Create Application Config ===
+    touch app.config
+    echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?>" >> app.config
+    echo "<configuration>" >> app.config
+    echo "  <appSettings>" >> app.config
+    echo "    <add key=\"applicationLoopEnabled\" value=\"true\" />" >> app.config
+    echo "  </appSettings>" >> app.config
+    echo "</configuration>" >> app.config
     
     popd
 }
