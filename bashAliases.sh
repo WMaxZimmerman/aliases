@@ -33,7 +33,7 @@ function reload?() {
     echo "Reloads or resets all aliases. (useful if making or pulling changes to the aliase files.)"
 }
 
-alias imout="shutdown -s -f -t 0"
+alias imout="'shutHerDown'"
 function imout?() {
     echo "Performs a forced system shutdown."
 }
@@ -427,4 +427,27 @@ function launchMinecraftServer(){
     cd /c/users/Max/Desktop/Minecraft/server
     java -Xmx1024M -Xms1024M -jar server.jar nogui
     cd "$currDir"
+}
+
+function shutHerDown(){
+    updateGtdRepo
+    
+    shutdown -s -f -t 0
+}
+
+function updateGtdRepo(){
+    pushd ~/GTD > /dev/null
+    haveChanges=$(gst | grep "file")
+
+    if [[ "$haveChanges" = "" ]];
+    then
+        echo "Found no changes"
+    else
+        echo "Found changes"
+	gas
+	gcam "Automatic Update"
+	git push
+    fi
+
+    popd > /dev/null
 }
