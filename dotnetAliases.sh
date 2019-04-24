@@ -31,10 +31,40 @@ function createDotnetNtierProject {
     dotnet new sln -n $projectName
 
     # === Create Projects ===
+    createDotnetSharedLayer $projectName
     createDotnetDataAccessLayer $projectName
     createDotnetApplicationCore $projectName
     createDotnetConsole $projectName
     createDotnetTestProject $projectName
+}
+
+function createDotnetSharedLayer {
+    local projectName=$1
+
+    dotnet new classlib -n $projectName.Shared
+    dotnet sln $projectName.sln add "$projectName.Shared/$projectName.Shared.csproj"
+
+    pushd $projectName.Shared
+
+    # === Clean up unwanted Files ===
+    rm -f Class1.cs
+
+    # === Structuring ===
+    mkdir Models
+    pushd Models # Entering Repositories
+
+    # === Create Example Repository
+    touch ExampleModel.cs
+    echo "namespace $projectName.Shared.Models" >> ExampleModel.cs
+    echo "{" >> ExampleModel.cs
+    echo "    public class ExampleModel" >> ExampleModel.cs
+    echo "    {" >> ExampleModel.cs
+    echo "    }" >> ExampleModel.cs
+    echo "}" >> ExampleModel.cs
+
+    popd # Leaving Models
+    
+    popd # Back to solution root
 }
 
 function createDotnetDataAccessLayer {
@@ -42,6 +72,7 @@ function createDotnetDataAccessLayer {
 
     dotnet new classlib -n $projectName.DAL
     dotnet sln $projectName.sln add "$projectName.DAL/$projectName.DAL.csproj"
+    dotnet add "$projectName.DAL/$projectName.DAL.csproj" reference "$projectName.Shared/$projectName.Shared.csproj"
 
     pushd $projectName.DAL
 
@@ -75,6 +106,7 @@ function createDotnetApplicationCore {
 
     dotnet new classlib -n $projectName.ApplicationCore
     dotnet sln $projectName.sln add "$projectName.ApplicationCore/$projectName.ApplicationCore.csproj"
+    dotnet add "$projectName.ApplicationCore/$projectName.ApplicationCore.csproj" reference "$projectName.Shared/$projectName.Shared.csproj"
     dotnet add "$projectName.ApplicationCore/$projectName.ApplicationCore.csproj" reference "$projectName.DAL/$projectName.DAL.csproj"
 
     pushd $projectName.ApplicationCore
@@ -109,6 +141,7 @@ function createDotnetConsole {
     dotnet sln $projectName.sln add "$projectName.Console/$projectName.Console.csproj"
 
     # === Add Project Dependencies ===
+    dotnet add "$projectName.Console/$projectName.Console.csproj" reference "$projectName.Shared/$projectName.Shared.csproj"
     dotnet add "$projectName.Console/$projectName.Console.csproj" reference "$projectName.ApplicationCore/$projectName.ApplicationCore.csproj"
     dotnet add "$projectName.Console/$projectName.Console.csproj" package System.Configuration.ConfigurationManager
     dotnet add "$projectName.Console/$projectName.Console.csproj" package WMZ.CommandAndConquer.CLI
@@ -173,6 +206,7 @@ function createDotnetTestProject {
     dotnet sln $projectName.sln add "$projectName.Tests/$projectName.Tests.csproj"
 
     # === Add Project Dependencies ===
+    dotnet add "$projectName.Tests/$projectName.Tests.csproj" reference "$projectName.Shared/$projectName.Shared.csproj"
     dotnet add "$projectName.Tests/$projectName.Tests.csproj" reference "$projectName.DAL/$projectName.DAL.csproj"
     dotnet add "$projectName.Tests/$projectName.Tests.csproj" reference "$projectName.ApplicationCore/$projectName.ApplicationCore.csproj"
     dotnet add "$projectName.Tests/$projectName.Tests.csproj" reference "$projectName.Console/$projectName.Console.csproj"
