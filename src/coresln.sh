@@ -1,27 +1,8 @@
 alias coresln="'createDotnetNtierProject'"
-function coresln?() {
+function coresln? {
     echo "Creates a new dotnet core solution and project structure with the given name."
     echo "Parameters (solutionName)"
     echo "$indentString solutionName: The name of the application that you are making."
-}
-
-alias csrun="'runDotnetFrameworkProject'"
-function csrun?() {
-    echo "Builds and runs the given dotnet project."
-    echo "Parameters (projectName)"
-    echo "$indentString projectName: The name of the project that you want to run."
-    echo "NOTE: You should be in the solution root when running this command."
-}
-
-function runDotnetFrameworkProject {
-    project=$1
-    msbuild.exe "$project/$project.csproj" -t:rebuild
-
-    echo ""
-    echo "=== Starting Application ==="
-    echo ""
-    
-    $project/bin/debug/$project.exe
 }
 
 function createDotnetNtierProject {
