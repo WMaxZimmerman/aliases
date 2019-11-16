@@ -125,14 +125,14 @@ function createDotnetConsole {
     dotnet add "$projectName.Console/$projectName.Console.csproj" reference "$projectName.Shared/$projectName.Shared.csproj"
     dotnet add "$projectName.Console/$projectName.Console.csproj" reference "$projectName.ApplicationCore/$projectName.ApplicationCore.csproj"
     dotnet add "$projectName.Console/$projectName.Console.csproj" package System.Configuration.ConfigurationManager
-    dotnet add "$projectName.Console/$projectName.Console.csproj" package WMZ.CommandAndConquer.CLI
+    dotnet add "$projectName.Console/$projectName.Console.csproj" package NTrospection.CLI
 
     pushd $projectName.Console
 
     # === Create Program.cs ===
     rm -f Program.cs
     touch Program.cs
-    echo "using CommandAndConquer.CLI.Core;" >> Program.cs
+    echo "using NTrospection.CLI.Core;" >> Program.cs
     echo "" >> Program.cs
     echo "namespace $projectName.Console" >> Program.cs
     echo "{" >> Program.cs
@@ -140,7 +140,7 @@ function createDotnetConsole {
     echo "   {" >> Program.cs
     echo "       static void Main(string[] args)" >> Program.cs
     echo "       {" >> Program.cs
-    echo "           Processor.ProcessArguments(args);" >> Program.cs
+    echo "           new Processor().ProcessArguments(args);" >> Program.cs
     echo "       }" >> Program.cs
     echo "   }" >> Program.cs
     echo "}" >> Program.cs
@@ -160,7 +160,7 @@ function createDotnetConsole {
     # === Create the Example Controller ===
     touch ExampleController.cs
     echo "using $projectName.ApplicationCore.Services;" >> ExampleController.cs
-    echo "using CommandAndConquer.CLI.Attributes;" >> ExampleController.cs
+    echo "using NTrospection.CLI.Attributes;" >> ExampleController.cs
     echo "" >> ExampleController.cs
     echo "namespace $projectName.Console.Controllers" >> ExampleController.cs
     echo "{" >> ExampleController.cs
@@ -183,7 +183,7 @@ function createDotnetTestProject {
     local projectName=$1
 
     # === Project Setup ===
-    dotnet new xunit -n $projectName.Tests
+    dotnet new mstest -n $projectName.Tests -f netcoreapp3.1
     dotnet sln $projectName.sln add "$projectName.Tests/$projectName.Tests.csproj"
 
     # === Add Project Dependencies ===
@@ -192,7 +192,7 @@ function createDotnetTestProject {
     dotnet add "$projectName.Tests/$projectName.Tests.csproj" reference "$projectName.ApplicationCore/$projectName.ApplicationCore.csproj"
     dotnet add "$projectName.Tests/$projectName.Tests.csproj" reference "$projectName.Console/$projectName.Console.csproj"
     dotnet add "$projectName.Tests/$projectName.Tests.csproj" package System.Configuration.ConfigurationManager
-    dotnet add "$projectName.Tests/$projectName.Tests.csproj" package WMZ.CommandAndConquer.CLI
+    dotnet add "$projectName.Tests/$projectName.Tests.csproj" package NTrospection.CLI
 
     pushd $projectName.Tests
 
@@ -206,4 +206,16 @@ function createDotnetTestProject {
     echo "</configuration>" >> app.config
     
     popd
+}
+
+function createDotnetBlazor {
+    local projectName=$1
+
+    # === Project Setup ===
+    dotnet new blazorwasm -n $projectName.UI
+    dotnet sln $projectName.sln add "$projectName.UI/$projectName.UI.csproj"
+
+    # === Add Project Dependencies ===
+    dotnet add "$projectName.UI/$projectName.UI.csproj" reference "$projectName.Shared/$projectName.Shared.csproj"
+    dotnet add "$projectName.UI/$projectName.UI.csproj" reference "$projectName.ApplicationCore/$projectName.ApplicationCore.csproj"
 }
