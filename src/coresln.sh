@@ -183,7 +183,7 @@ function createDotnetTestProject {
     local projectName=$1
 
     # === Project Setup ===
-    dotnet new mstest -n $projectName.Tests -f netcoreapp3.1
+    dotnet new mstest -n $projectName.Tests
     dotnet sln $projectName.sln add "$projectName.Tests/$projectName.Tests.csproj"
 
     # === Add Project Dependencies ===
