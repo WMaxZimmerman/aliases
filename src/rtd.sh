@@ -1,0 +1,223 @@
+
+
+alias rtd="'rollTheDice'"
+function rtd? {
+    echo "Rolls a dice based on the function that you provided"
+    echo "Parameters (roll)"
+    echo "$indentString roll: The string of what to roll"
+}
+
+function rollTheDice {
+# print instructions if no arguments given
+    if [ $# -eq 0 ] || [ $1 == '-h' ] 
+    then
+        printf "
+roll v1.1 by Rodney DuPlessis   
+ 
+roll is a command line script written in bash to roll arbitrary numbers of arbitrarily-sided dice.
+roll also allows for a modifier and to set the minimum accepted value of each individual roll.
+
+----
+
+The basic syntax is:
+        
+roll [#]d[sides]
+        
+Where:
+[#] is the number of dice you want to roll
+[sides] is the number of sides of the dice you want to roll
+
+----
+
+Optional:
+
+
+You may add a modifier to add or subtract from the final result:
+
+roll [#]d[sides][+/-][mod]
+
+Where:
+[+/-] is either a plus (+) or minus (-) sign 
+[mod] is a modifier to add to the result
+
+
+You may also use the \"-min\" flag to set a minimum outcome for each individual die roll:
+
+roll [#]d[sides] -min [min#]
+
+Where:
+[min#] sets a minimum to round up to (any individual die that rolls less than this number will be rounded up)
+Note: don't forget to add a space before and after the \"-min\" flag.
+
+----
+
+Example usage:
+
+roll 3d15
+
+will roll 3 15-sided dice
+
+        
+roll 5d6+10
+
+will roll 5 6-sided dice and add 10 to the total result
+
+
+roll 7d203-11
+
+will roll 7 203-sided dice and subtract 11 from the total result
+
+
+roll 6d10+12 -min 6
+
+will roll 6 10-sided dice, rounding up to 6 any individual die that results in less than 6, and then add 12 to the total result.
+
+"
+        exit 1
+    fi
+
+    if [ $# -eq 2 ] || [ $# -gt 3 ]
+    then
+        printf "
+Syntax Error: Wrong number of arguments
+
+Type 'roll -h' to see correct syntax
+
+"
+        exit 1
+    fi
+
+
+    # parse the argument
+    NUMDICE=$(echo $1 | sed 's/d.*//')
+
+    # if no number of dice given, default to 1
+    if [[ $NUMDICE == '' ]]
+    then
+        NUMDICE=1
+    fi
+
+    # check for modifier
+    if [ $(echo $1 | grep '+') ] # check for positive modifier
+    then
+        FACES=$(echo $1 | sed -e 's/.*d\(.*\)+.*/\1/')
+        MODIFIER=$(echo $1 | sed 's/.*+/0+/' | bc)
+
+    else
+        if [ $(echo $1 | grep '-') ] # check for negative modifier
+        then
+            FACES=$(echo $1 | sed -e 's/.*d\(.*\)-.*/\1/')
+            MODIFIER=$(echo $1 | sed 's/.*-/0-/' | bc)
+        else # If there is no modifier
+            FACES=$(echo $1 | sed -e 's/.*d\(.*\)/\1/')
+            MODIFIER=0
+        fi
+    fi
+
+    if [ $# -eq 3 ] # check if there are extra arguments 
+    then
+        if [ $2 = "-min" ] #  check that the flag is "-min" (accept no others)
+        then
+            MIN=$3
+        else
+            printf "
+Syntax Error: $2 is not a valid flag
+
+Type 'roll -h' to see correct syntax
+"
+            exit 1
+        fi
+    else # if there is no minimum, set it to 0
+        MIN=0
+    fi
+
+    # int number regex to check args against
+    INT='^-?[0-9]+$'
+    # check if args are integer numbers
+    if ! [[ $NUMDICE =~ $INT ]] || ! [[ $FACES =~ $INT ]] || ! [[ $MODIFIER =~ $INT ]] || ! [[ $MIN =~ $INT ]]
+    then
+        printf "
+Syntax Error: arguments must be integer (whole) numbers.
+
+Type 'roll -h' to see correct syntax
+
+"
+        exit 1
+    fi
+
+    if [ $FACES -eq 0 ]
+    then
+        printf "
+Syntax Error: Dice cannot have 0 faces... That would break reality.
+
+Type 'roll -h' to see correct syntax
+
+"
+        exit 1
+    fi
+
+    if [ $FACES -lt 0 ]
+    then
+        printf "
+Syntax Error: Seriously? You want me to roll dice with a negative number of faces? Excuse me while I alter the laws of physics.
+
+Type 'roll -h' to see correct syntax
+
+"
+        exit 1
+    fi
+
+    if [ $NUMDICE -eq 0 ]
+    then
+        printf "
+You roll no dice. I award you no points... and may God have mercy on your soul.
+
+"
+        exit 1
+    fi
+
+    if [ $NUMDICE -lt 0 ]
+    then
+        printf "
+Syntax Error: I cannot roll a negative number of dice. Are you asking me to unroll dice? brb while I wage war against entropy...
+
+Type 'roll -h' to see correct syntax
+
+"
+        exit 1
+    fi
+
+    # Set the total to zero before rolling
+    RESULT=0
+    TOTALROUND=0
+
+    # do the rolls
+    for i in $(eval echo "{1..$NUMDICE}")
+    do
+        ROUNDED=""
+        ROLL=$(( ( RANDOM % $FACES ) + 1 ))
+        if [ $ROLL -lt $MIN ]
+        then
+            ROUNDAMT=$(($MIN - $ROLL))
+            let TOTALROUND+=$ROUNDAMT
+            ROUNDED=" (Rounded up from $ROLL)"
+            ROLL=$MIN    
+        fi
+        echo "roll "$i": "$ROLL $ROUNDED
+        let RESULT+=$ROLL
+
+    done
+
+    echo 
+
+    # add optional modifier
+    if [ $MODIFIER -ne 0 ]
+    then
+        echo "Rolled total:" $RESULT
+        let RESULT+=$MODIFIER
+        printf '%s: %+i \n' "Modifier" $MODIFIER
+    fi
+
+    echo "TOTAL:" $RESULT
+}
+

@@ -24,9 +24,18 @@ function openInGitHub {
         url=${url/":"/"/"}
         url=$(trimString "$url" 4 4)
     else
-        url=$(trimString "$url" 0 4)
+        if [[ $url == *"azure.com"* ]];
+        then
+            url=$(echo "$url" | sed 's/\/\/.*@/\/\//g')
+            web $url
+        else
+            url=$(trimString "$url" 0 4)
+        fi
     fi
 
-    url="$url/tree/$branch"
-    web $url
+    if [[ $url != *"azure.com"* ]];
+    then
+        url="$url/tree/$branch"
+        web $url
+    fi
 }
