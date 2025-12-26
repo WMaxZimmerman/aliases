@@ -1,18 +1,14 @@
-alias wifi="'listAllWifiPasswordsKnown'"
+alias wifi="'showNetworkProfile'"
 function wifi? {
-    echo "Outputs a list of all known wifi passwords"
+    echo "Shows all known network profiles or the spefici profile if given a name"
+    echo "Parameters (profile)"
+    echo "$indentString profile: The name of a specific profile to show"
 }
 
-function listAllWifiPasswordsKnown {
-    tempFile="$TEMP/wifiList.txt"
-    netsh wlan show profile | grep "Profile     :"  > $tempFile
-    searchString="All User Profile     : "
-    replaceString=""
-    sed -i "s/$searchString/$replaceString/g" $tempFile
-
-    while read l; do
-        pwd=$(netsh wlan show profile "$l" key=clear | grep "Key Content" | sed "s/  Key Content            : //g")
-        trimmedPwd=$(trimString "$pwd" 0 0)
-        echo "$l : $trimmedPwd"
-    done < $tempFile
+function showNetworkProfile {
+    if [[ -n "$1" ]]; then
+        netsh wlan show profile "$1" key=clear
+    else
+        netsh wlan show profiles
+    fi
 }
